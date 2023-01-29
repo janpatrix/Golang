@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +32,18 @@ func main() {
 
 	// handle requests to the "post" URL
 	router.GET("/post/:id", func(c *gin.Context) {
-		id := c.Param("id")
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		if id < 0 || id >= len(posts) {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
 		post := posts[id]
 		c.HTML(http.StatusOK, "post.html", gin.H{
 			"post": post,
