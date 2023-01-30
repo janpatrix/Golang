@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"mym ath"
+	"mymath"
 )
 
 func main() {
