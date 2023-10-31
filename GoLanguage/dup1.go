@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -11,6 +12,10 @@ func main() {
 	input := bufio.NewScanner(os.Stdin)
 	for input.Scan() {
 		counts[input.Text()]++
+
+		if len(strings.TrimSpace(input.Text())) == 0 {
+			break
+		}
 	}
 	for line, n := range counts {
 		if n > 1 {
