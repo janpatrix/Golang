@@ -2,16 +2,15 @@ package main
 
 import (
 	"image"
+	"image/color"
 	"image/gif"
 	"io"
 	"math"
 	"math/rand"
 	"os"
-
-	"github.com/fatih/color"
 )
 
-var palette = []color.Color{color.White, color.Black}
+var palette = []color.Color{color.RGBA{195, 255, 104, 1}, color.Black}
 
 const (
 	whiteIndex = 0
