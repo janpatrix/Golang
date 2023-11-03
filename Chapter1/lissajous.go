@@ -7,7 +7,6 @@ import (
 	"io"
 	"math"
 	"math/rand"
-	"os"
 )
 
 var palette = []color.Color{color.RGBA{195, 255, 104, 1}, color.Black, color.White}
@@ -17,10 +16,6 @@ const (
 	blackIndex = 1
 	whiteIndex = 2
 )
-
-func main() {
-	lissajous(os.Stdout)
-}
 
 func lissajous(out io.Writer) {
 	const (
