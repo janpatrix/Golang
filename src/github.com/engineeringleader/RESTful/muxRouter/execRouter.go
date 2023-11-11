@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"net/http"
 	"os/exec"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func getCommandOutput(command string, arguments ...string) string {
@@ -24,4 +27,19 @@ func getCommandOutput(command string, arguments ...string) string {
 		log.Fatal(fmt.Sprint(err) + ": " + stderr.String())
 	}
 	return out.String()
+}
+
+func goVersion(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	fmt.Fprint(w, getCommandOutput("/opt/homebrew/bin/go", "version"))
+}
+
+func getFileContent(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	fmt.Fprint(w, getCommandOutput("bin/cat", params.ByName("name")))
+}
+
+func main() {
+	router := httprouter.New()
+	router.GET("/api/v1/go-version", goVersion)
+	router.GET("/api/v1/show_file:name", getFileContent)
+	log.Fatal(http.ListenAndServe(":8000", router))
 }

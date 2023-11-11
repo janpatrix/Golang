@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"strings"
 
-	"restful.engineeringleader.de/romanNumerals"
+	"github.com/engineeringleader/romanNumerals"
 )
 
-func main() {
+func main2() {
 	http.HandleFunc("/", getRomanNumeral)
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
