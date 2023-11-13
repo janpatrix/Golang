@@ -3,3 +3,4 @@ go.sum
 /bin
 /pkg
 .vscode
+-DS_Store
