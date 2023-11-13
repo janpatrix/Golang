@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"engineeringleader.de/snippetbox/pkg/models/mysql"
+	"engineeringleader.de/snippetbox/snippetbox/pkg/models/mysql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
