@@ -3,4 +3,6 @@ go.sum
 /bin
 /pkg
 .vscode
--DS_Store
+*.DS_Store
+src/github.com/engineeringleader/lets_go/.DS_Store
+src/github.com/engineeringleader/lets_go/snippetbox/.DS_Store
