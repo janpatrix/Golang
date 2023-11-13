@@ -1,0 +1,20 @@
+1.01s elapsed
+0.19s   18470 http://google.de
+0.21s  114571 http://swarco.com
+0.36s   25258 http://engineeringleader.de
+0.56s   61870 https://golang.org
+1.00s    4154 http://gopl.io
+1.08s elapsed
+0.19s  114571 http://swarco.com
+0.21s   18426 http://google.de
+0.37s   25258 http://engineeringleader.de
+0.47s   61870 https://golang.org
+1.08s    4154 http://gopl.io
+1.00s elapsed
+0.18s  114571 http://swarco.com
+0.20s   18380 http://google.de
+0.40s   25258 http://engineeringleader.de
+0.55s   61870 https://golang.org
+1.00s    4154 http://gopl.io
+0.79s elapsed
+0.79s    6779 http://alexa.com
