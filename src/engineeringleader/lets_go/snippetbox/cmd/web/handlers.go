@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"engineeringleader.de/snippetbox/snippetbox/pkg/forms"
-	"engineeringleader.de/snippetbox/snippetbox/pkg/models"
+	"engineeringleader.de/snippetbox/pkg/forms"
+	"engineeringleader.de/snippetbox/pkg/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +70,7 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := app.snippets.Insert(title, content, expires)
+	id, err := app.snippets.Insert(form.Get("title"), form.Get("content"), form.Get("expires"))
 	if err != nil {
 		app.serverError(w, err)
 		return

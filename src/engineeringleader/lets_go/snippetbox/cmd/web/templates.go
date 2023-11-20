@@ -1,19 +1,16 @@
 package main
 
 import (
-	"net/url"
 	"path/filepath"
 	"text/template"
 	"time"
 
-	"engineeringleader.de/snippetbox/snippetbox/pkg/forms"
-	"engineeringleader.de/snippetbox/snippetbox/pkg/models"
+	"engineeringleader.de/snippetbox/pkg/forms"
+	"engineeringleader.de/snippetbox/pkg/models"
 )
 
 type templateData struct {
 	CurrentYear int
-	FormData    url.Values
-	FormErrors  map[string]string
 	Form        *forms.Form
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
