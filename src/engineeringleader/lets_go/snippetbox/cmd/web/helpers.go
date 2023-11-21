@@ -13,18 +13,9 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 		td = &templateData{}
 	}
 	td.CurrentYear = time.Now().Year()
+	td.Flash = app.session.PopString(r, "flash")
 	return td
 }
-
-// func neuter(next http.Handler) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		if strings.HasSuffix(r.URL.Path, "/") {
-// 			http.NotFound(w, r)
-// 			return
-// 		}
-// 		next.ServeHTTP(w, r)
-// 	})
-// }
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
