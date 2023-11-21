@@ -81,7 +81,9 @@ func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Log the user out...")
+	app.session.Remove(r, "authenticatedUserID")
+	app.session.Put(r, "flash", "You have been logged out successfully!")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
