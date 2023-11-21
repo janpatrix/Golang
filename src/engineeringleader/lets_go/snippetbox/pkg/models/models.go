@@ -5,8 +5,11 @@ import (
 	"time"
 )
 
-var ErrNoRecord = errors.New("models: no matching record found")
-var ErrDuplicateEmail = errors.New("models: duplicate email")
+var (
+	ErrNoRecord           = errors.New("models: no matching record found")
+	ErrDuplicateEmail     = errors.New("models: duplicate email")
+	ErrInvalidCredentials = errors.New("models: wrong credentials")
+)
 
 type Snippet struct {
 	ID      int
