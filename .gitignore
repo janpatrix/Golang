@@ -2,6 +2,7 @@ go.mod
 go.sum
 /bin
 /pkg
+/tls
 .vscode
 *.DS_Store
 src/github.com/engineeringleader/lets_go/.DS_Store
