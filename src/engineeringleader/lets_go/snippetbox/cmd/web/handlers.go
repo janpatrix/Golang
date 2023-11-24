@@ -91,9 +91,7 @@ func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) about(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, "about.page.tmpl", &templateData{
-		Form: forms.New(nil),
-	})
+	app.render(w, r, "about.page.tmpl", nil)
 }
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
