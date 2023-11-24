@@ -21,3 +21,17 @@ func TestPing(t *testing.T) {
 		t.Errorf("want body to equal %q", "OK")
 	}
 }
+
+func TestShowSnippet(t *testing.T) {
+	app := newTestApplication(t)
+
+	ts := newTestServer(t, app.routes())
+	defer ts.Close()
+
+	tests := []struct {
+		name     string
+		urlPath  string
+		wantCode int
+		wantBody []byte
+	}{}
+}
