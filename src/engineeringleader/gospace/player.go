@@ -1,10 +1,13 @@
 package main
 
 import (
+	b "gospace/basic"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
+
+var PlayerSprite = b.MustLoadImage("assets/ships/player.png")
 
 type Player struct {
 	rotation float64

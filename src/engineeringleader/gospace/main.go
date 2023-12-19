@@ -2,42 +2,44 @@ package main
 
 import (
 	"embed"
-	"image"
-	_ "image/png"
+	"fmt"
+	b "gospace/basic"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-//go:embed assets/*
-var assets embed.FS
-var PlayerSprite = mustLoadImage("assets/player.png")
+func LoadImagesFromFolder(folder embed.FS) []*ebiten.Image {
+	var images []*ebiten.Image
 
-type Vector struct {
-	X float64
-	Y float64
-}
+	// Walk through the folder and get all files with the .png extension
+	err := filepath.WalkDir("basic/assets/meteors", func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
 
-func mustLoadImage(name string) *ebiten.Image {
-	println(name)
-	f, err := assets.Open(name)
-	if err != nil {
+		if filepath.Ext(path) == "*.png" {
+			fmt.Println("Loading image:", path)
+			images = append(images, b.MustLoadImage(path))
+		}
 
-		panic(err)
-	}
-	defer f.Close()
+		return nil
+	})
 
-	img, _, err := image.Decode(f)
 	if err != nil {
 		panic(err)
 	}
 
-	return ebiten.NewImageFromImage(img)
+	return images
 }
 
 func main() {
 
 	g := &Game{
-		player: NewPlayer(),
+		player:           NewPlayer(),
+		meteorSpawnTimer: b.NewTimer(time.Second * 5),
 	}
 
 	err := ebiten.RunGame(g)
