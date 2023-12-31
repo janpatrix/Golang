@@ -144,7 +144,6 @@ func (m MovieModel) Delete(id int64) error {
 
 func ValidateMovie(v *validator.Validator, movie *Movie) {
 
-	v = validator.New()
 	v.Check(movie.Title != "", "title", "must be provided")
 	v.Check(len(movie.Title) <= 500, "title", "must be more than 500 bytes long")
 
