@@ -39,7 +39,7 @@ func main() {
 
 	g := &Game{
 		player:           NewPlayer(),
-		meteorSpawnTimer: b.NewTimer(time.Second * 5),
+		meteorSpawnTimer: b.NewTimer(time.Second * 2),
 	}
 
 	err := ebiten.RunGame(g)
