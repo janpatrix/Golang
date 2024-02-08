@@ -1,2 +1,4 @@
-src/engineeringleader/go-micro/project/db-data/
-src/engineeringleader/go-micro/project/db-data/mongo/
+db-data/
+mongo/
+postgres/
+
