@@ -11,6 +11,14 @@ type RequestPayload struct {
 	Action string      `json:"action"`
 	Auth   AuthPayload `json:"auth,omitempty"`
 	Log    LogPayload  `json:"log,omitempty"`
+	Mail   MailPayload `json:"mail,omitempty"`
+}
+
+type MailPayload struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
 }
 
 type AuthPayload struct {
@@ -46,10 +54,20 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.authenticate(w, requestPayload.Auth)
 	case "log":
 		app.logItem(w, requestPayload.Log)
+	case "mail":
+		app.sendMail(w, requestPayload.Mail)
 	default:
 		app.errorJSON(w, errors.New("unknown action"))
 
 	}
+}
+
+func (app *Config) sendMail(w http.ResponseWriter, mail MailPayload) {
+	jsonData, _ := json.MarshalIndent(mail, "", "\t")
+
+	mailServiceURL := "http://mail-service/send"
+
+	app.setRequest(w, mailServiceURL, jsonData)
 }
 
 func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
@@ -57,28 +75,7 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 
 	logServiceURL := "http://logger-service/log"
 
-	request, err := http.NewRequest("POST", logServiceURL, bytes.NewBuffer(jsonData))
-	if err != nil {
-		app.errorJSON(w, err)
-		return
-	}
-
-	request.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-
-	response, err := client.Do(request)
-	if err != nil {
-		app.errorJSON(w, err)
-		return
-	}
-
-	defer response.Body.Close()
-
-	if response.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, err)
-		return
-	}
+	app.setRequest(w, logServiceURL, jsonData)
 
 	var payload jsonResponse
 	payload.Error = false
@@ -92,8 +89,10 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	//create json to auth Microservice
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
+	authServiceURL := "http://authentication-service/authenticate"
+
 	//call service
-	request, err := http.NewRequest("POST", "http://authentication-service/authenticate", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", authServiceURL, bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -136,4 +135,30 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	payload.Data = jsonFromService.Data
 
 	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) setRequest(w http.ResponseWriter, url string, jsonData []byte) {
+
+	request, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, err)
+		return
+	}
 }
