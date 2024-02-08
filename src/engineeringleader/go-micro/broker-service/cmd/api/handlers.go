@@ -68,6 +68,13 @@ func (app *Config) sendMail(w http.ResponseWriter, mail MailPayload) {
 	mailServiceURL := "http://mail-service/send"
 
 	app.setRequest(w, mailServiceURL, jsonData)
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "Mail sent to " + mail.To
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+
 }
 
 func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
@@ -79,7 +86,7 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 
 	var payload jsonResponse
 	payload.Error = false
-	payload.Message = "logger"
+	payload.Message = "Logged!"
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
