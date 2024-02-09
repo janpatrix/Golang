@@ -79,19 +79,19 @@ func (app *Config) sendMail(w http.ResponseWriter, mail MailPayload) {
 
 }
 
-func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
-	jsonData, _ := json.MarshalIndent(entry, "", "\t")
+// func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
+// 	jsonData, _ := json.MarshalIndent(entry, "", "\t")
 
-	logServiceURL := "http://logger-service/log"
+// 	logServiceURL := "http://logger-service/log"
 
-	app.setRequest(w, logServiceURL, jsonData)
+// 	app.setRequest(w, logServiceURL, jsonData)
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "Logged!"
+// 	var payload jsonResponse
+// 	payload.Error = false
+// 	payload.Message = "Logged!"
 
-	app.writeJSON(w, http.StatusAccepted, payload)
-}
+// 	app.writeJSON(w, http.StatusAccepted, payload)
+// }
 
 func (app *Config) logEventRabbit(w http.ResponseWriter, l LogPayload) {
 	err := app.pushToQueue(l.Name, l.Data)
