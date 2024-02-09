@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/rpc"
 
 	"engineeringleader.de/broker/event"
 )
@@ -33,6 +34,11 @@ type LogPayload struct {
 	Data string `json:"data"`
 }
 
+type RPCPayload struct {
+	Name string
+	Data string
+}
+
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	payload := jsonResponse{
 		Error:   false,
@@ -55,7 +61,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	case "auth":
 		app.authenticate(w, requestPayload.Auth)
 	case "log":
-		app.logEventRabbit(w, requestPayload.Log)
+		app.logItemRPC(w, requestPayload.Log)
 	case "mail":
 		app.sendMail(w, requestPayload.Mail)
 	default:
@@ -79,6 +85,7 @@ func (app *Config) sendMail(w http.ResponseWriter, mail MailPayload) {
 
 }
 
+//DEPRECATED
 // func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 // 	jsonData, _ := json.MarshalIndent(entry, "", "\t")
 
@@ -93,18 +100,46 @@ func (app *Config) sendMail(w http.ResponseWriter, mail MailPayload) {
 // 	app.writeJSON(w, http.StatusAccepted, payload)
 // }
 
-func (app *Config) logEventRabbit(w http.ResponseWriter, l LogPayload) {
-	err := app.pushToQueue(l.Name, l.Data)
+// func (app *Config) logEventRabbit(w http.ResponseWriter, l LogPayload) {
+// 	err := app.pushToQueue(l.Name, l.Data)
+// 	if err != nil {
+// 		app.errorJSON(w, err)
+// 		return
+// 	}
+
+// 	var payload jsonResponse
+// 	payload.Error = false
+// 	payload.Message = "logged in RabbitMQ"
+
+// 	app.writeJSON(w, http.StatusAccepted, payload)
+// }
+
+func (app *Config) logItemRPC(w http.ResponseWriter, l LogPayload) {
+	client, err := rpc.Dial("tcp", "logger-service:5001")
 	if err != nil {
 		app.errorJSON(w, err)
 		return
 	}
 
-	var payload jsonResponse
-	payload.Error = false
-	payload.Message = "logged in RabbitMQ"
+	rpcPayload := RPCPayload{
+		Name: l.Name,
+		Data: l.Data,
+	}
+
+	var result string
+	err = client.Call("RPCServer.LogInfo", rpcPayload, &result)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: result,
+	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)
+
 }
 
 func (app *Config) pushToQueue(name, msg string) error {
