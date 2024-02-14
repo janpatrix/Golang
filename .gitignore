@@ -1,5 +1,4 @@
-go.mod
-go.sum
+
 /bin
 /pkg
 /tls
@@ -7,3 +6,4 @@ go.sum
 *.DS_Store
 src/github.com/engineeringleader/lets_go/.DS_Store
 src/github.com/engineeringleader/lets_go/snippetbox/.DS_Store
+.DS_Store
