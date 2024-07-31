@@ -16,7 +16,7 @@ const Movies = () => {
             },
             {
                 id: 2,
-                title: "Raiders of the lost arc",
+                title: "Raiders of the Lost Arc",
                 release_date: "1991-06-12",
                 runtime: 115,
                 mpaa_rating: "PG-13",
