@@ -16,7 +16,7 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 		Version: "1.0.0",
 	}
 
-	app.writeJSON(w, http.StatusOK, payload)
+	_ = app.writeJSON(w, http.StatusOK, payload)
 }
 
 func (app *application) AllMovies(w http.ResponseWriter, r *http.Request) {
@@ -25,5 +25,5 @@ func (app *application) AllMovies(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	app.writeJSON(w, http.StatusOK, movies)
+	_ = app.writeJSON(w, http.StatusOK, movies)
 }
