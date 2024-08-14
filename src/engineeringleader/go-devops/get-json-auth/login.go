@@ -16,7 +16,7 @@ type LoginResponse struct {
 	Token string `json:"token"`
 }
 
-func doLoginRequest(requestURL, password string) (string, error) {
+func doLoginRequest(client http.Client, requestURL, password string) (string, error) {
 
 	loginRequest := LoginRequest{
 		Password: password,
@@ -27,7 +27,7 @@ func doLoginRequest(requestURL, password string) (string, error) {
 		return "", fmt.Errorf("marshal error: %s", err)
 	}
 
-	response, err := http.Post(requestURL, "application/json", bytes.NewBuffer(body))
+	response, err := client.Post(requestURL, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
 		return "", fmt.Errorf("http post: %s", err)
@@ -53,6 +53,10 @@ func doLoginRequest(requestURL, password string) (string, error) {
 	err = json.Unmarshal(resBody, &loginResponse)
 	if err != nil {
 		return "", unmarshalErr("LoginResponse unmarshal error:", err, response, resBody)
+	}
+
+	if loginResponse.Token == "" {
+		return "", unmarshalErr("Login token is empty", err, response, resBody)
 	}
 
 	return loginResponse.Token, nil

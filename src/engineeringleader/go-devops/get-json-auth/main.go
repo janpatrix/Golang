@@ -37,16 +37,20 @@ func main() {
 		os.Exit(1)
 	}
 
+	client := http.Client{}
+
 	if password != "" {
-		token, err := doLoginRequest(parsedURL.Scheme+"://"+parsedURL.Host+"/login", password)
+		token, err := doLoginRequest(client, parsedURL.Scheme+"://"+parsedURL.Host+"/login", password)
 		if err != nil {
 			requestErr(err)
 		}
-		fmt.Printf("token: %s\n", token)
-		os.Exit(1)
+		client.Transport = MyJWTTransport{
+			transport: http.DefaultTransport,
+			token:     token,
+		}
 	}
 
-	res, err := doRequest(parsedURL.String())
+	res, err := doRequest(client, parsedURL.String())
 	if err != nil {
 		requestErr(err)
 	}
@@ -56,12 +60,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Response %s", res.getResponse())
+	fmt.Printf("Response: %s", res.getResponse())
 }
 
-func doRequest(requestURL string) (Response, error) {
+func doRequest(client http.Client, requestURL string) (Response, error) {
 
-	response, err := http.Get(requestURL)
+	response, err := client.Get(requestURL)
 	if err != nil {
 		return nil, fmt.Errorf("http get: %s", err)
 	}
