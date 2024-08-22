@@ -32,13 +32,27 @@ func createEC2(ctx context.Context, region string) (string, error) {
 	}
 
 	ec2Client := ec2.NewFromConfig(cfg)
-	_, err = ec2Client.CreateKeyPair(ctx, &ec2.CreateKeyPairInput{
-		KeyName: aws.String("aws-go-demo"),
+
+	keyPairs, err := ec2Client.DescribeKeyPairs(ctx, &ec2.DescribeKeyPairsInput{
+		KeyNames: []string{"aws-go-demo"},
 	})
 
 	if err != nil {
 		return "", fmt.Errorf("create KeyPair error, %s", err)
+	}
 
+	if len(keyPairs.KeyPairs) == 0 {
+		keyPair, err := ec2Client.CreateKeyPair(ctx, &ec2.CreateKeyPairInput{
+			KeyName: aws.String("aws-go-demo"),
+		})
+		if err != nil {
+			return "", fmt.Errorf("create KeyPair error, %s", err)
+		}
+
+		err = os.WriteFile("go-aws-ec2.pem", []byte(*keyPair.KeyMaterial), 0600)
+		if err != nil {
+			return "", fmt.Errorf("writeFile error, %s", err)
+		}
 	}
 
 	imageOutput, err := ec2Client.DescribeImages(ctx, &ec2.DescribeImagesInput{
