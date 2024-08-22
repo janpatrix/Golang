@@ -38,7 +38,16 @@ func main() {
 		fmt.Printf("upload to S3 bucket error, %s", err)
 		os.Exit(1)
 	}
+
 	fmt.Println("Upload complete.")
+
+	out, err := downloadFromS3Bucket(ctx, s3Client)
+	if err != nil {
+		fmt.Printf("download from S3 bucket error, %s", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Output: %s", out)
 
 }
 
@@ -98,4 +107,25 @@ func uploadToS3Bucket(ctx context.Context, s3Client *s3.Client) error {
 	}
 
 	return nil
+}
+
+func downloadFromS3Bucket(ctx context.Context, s3Client *s3.Client) ([]byte, error) {
+
+	buffer := manager.NewWriteAtBuffer([]byte{})
+
+	downloader := manager.NewDownloader(s3Client)
+	numBytes, err := downloader.Download(ctx, buffer, &s3.GetObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String("test.txt"),
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("download error to S3 bucket, %s", err)
+	}
+
+	if numBytesReceived := len(buffer.Bytes()); numBytes != int64(numBytesReceived) {
+		return nil, fmt.Errorf("numbytes received doesn't match: %d : %d", numBytes, numBytesReceived)
+	}
+
+	return buffer.Bytes(), nil
 }
